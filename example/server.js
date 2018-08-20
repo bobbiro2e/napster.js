@@ -3,8 +3,8 @@ var bodyParser = require('body-parser');
 var request = require('request');
 var querystring = require('querystring');
 
-var apiKey = 'API_KEY';
-var apiSecret = 'API_SECRET';
+var apiKey = 'NjIxOWQxNWEtYTE1NC00M2JiLWFkN2YtM2JiNjUwYTVlNmNm';
+var apiSecret = 'ODAzNmVhNDEtZmJkMS00MmM1LTlmZDMtZjRiZDJjZjgxOTdi';
 
 var port = 2000;
 var baseUrl = 'http://localhost:' + port;
@@ -16,7 +16,7 @@ app.use(express.static(__dirname + '/'));
 app.use(express.static(__dirname + '/../'));
 app.use(bodyParser.json());
 
-app.get('/', function(request, response) {
+app.get('/', function (request, response) {
   var path = 'https://api.napster.com/oauth/authorize?' + querystring.stringify({
     response_type: 'code',
     client_id: apiKey,
@@ -26,7 +26,7 @@ app.get('/', function(request, response) {
   response.redirect(path);
 });
 
-app.get('/authorize', function(clientRequest, clientResponse) {
+app.get('/authorize', function (clientRequest, clientResponse) {
   request.post({
     url: 'https://api.napster.com/oauth/access_token',
     form: {
@@ -37,7 +37,7 @@ app.get('/authorize', function(clientRequest, clientResponse) {
       redirect_uri: redirectUri,
       grant_type: 'authorization_code'
     }
-  }, function(error, response, body) {
+  }, function (error, response, body) {
     body = JSON.parse(body);
     clientResponse.redirect(baseUrl + '/client.html?' + querystring.stringify({
       accessToken: body.access_token,
@@ -46,11 +46,11 @@ app.get('/authorize', function(clientRequest, clientResponse) {
   });
 });
 
-app.get('/reauthorize', function(clientRequest, clientResponse) {
+app.get('/reauthorize', function (clientRequest, clientResponse) {
   var refreshToken = request.query.refreshToken;
 
   if (!refreshToken) {
-    clientResponse.json(400, { error: 'A refresh token is required.'});
+    clientResponse.json(400, { error: 'A refresh token is required.' });
     return;
   }
 
@@ -63,7 +63,7 @@ app.get('/reauthorize', function(clientRequest, clientResponse) {
       grant_type: 'refresh_token',
       refresh_token: refreshToken
     }
-  }, function(error, response, body) {
+  }, function (error, response, body) {
     console.log('Platform response:', {
       error: error,
       statusCode: response.statusCode,
@@ -79,6 +79,6 @@ app.get('/reauthorize', function(clientRequest, clientResponse) {
   });
 });
 
-app.listen(port, function() {
+app.listen(port, function () {
   console.log('Listening on', port);
 });
